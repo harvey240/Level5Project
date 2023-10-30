@@ -13,8 +13,10 @@ public class FPSController : MonoBehaviour
     public Camera playerCamera;
     public float lookSpeed = 2.0f;
     public float lookXLimit = 45.0f;
-
-    CharacterController characterController;
+    [HideInInspector]
+    public bool isMoving=false;
+    [HideInInspector]
+    public CharacterController characterController;
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
 
@@ -59,6 +61,11 @@ public class FPSController : MonoBehaviour
             moveDirection.y -= gravity * Time.deltaTime;
         }
 
+        if(curSpeedX != 0 || curSpeedY != 0)
+            isMoving = true;
+        else
+            isMoving = false;
+
         // Move the controller
         characterController.Move(moveDirection * Time.deltaTime);
 
@@ -70,5 +77,6 @@ public class FPSController : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
+
     }
 }

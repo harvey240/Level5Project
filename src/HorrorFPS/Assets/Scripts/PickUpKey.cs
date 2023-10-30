@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEditor.UI;
 using UnityEngine;
 
-public class PickUpKey : MonoBehaviour
+public class PickUpKey : Interactable
 {
-    public Component doorCollider;
+    // public Component doorCollider;
     public GameObject key;
     public PlayerTest playerTest;
 
@@ -15,14 +15,20 @@ public class PickUpKey : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void OnTriggerStay()
+    protected override void Interact()
     {
-        if(Input.GetKey(KeyCode.E))
-            {
-                // doorCollider.GetComponent<BoxCollider>().enabled = true;
-                playerTest.HasKey = true;
-                key.SetActive(false);
-            } 
+        Debug.Log("Interacted with " + gameObject.name);
+        playerTest.HasKey = true;
+        gameObject.SetActive(false);
     }
+
+    // void OnTriggerStay()
+    // {
+    //     if(Input.GetKey(KeyCode.E))
+    //         {
+    //             // doorCollider.GetComponent<BoxCollider>().enabled = true;
+    //             playerTest.HasKey = true;
+    //             key.SetActive(false);
+    //         } 
+    // }
 }

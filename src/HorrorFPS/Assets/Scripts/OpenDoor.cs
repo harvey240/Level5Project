@@ -25,9 +25,12 @@ public class OpenDoor : MonoBehaviour
 
     void Update()
     {
-        if (playerTest.HasKey)
+        if (locked==true)
         {
-            locked = false;
+            if (playerTest.HasKey)
+            {
+                locked = false;
+            }
         }
     }
     
