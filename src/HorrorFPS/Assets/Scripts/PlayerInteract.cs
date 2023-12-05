@@ -34,7 +34,7 @@ public class PlayerInteract : MonoBehaviour
             if (hitInfo.collider.GetComponent<Interactable>())
             {
                 Interactable interactable = hitInfo.collider.GetComponent<Interactable>();
-                UpdateText(interactable.promptMessage);
+                UpdateText("[E] " + interactable.promptMessage);
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {

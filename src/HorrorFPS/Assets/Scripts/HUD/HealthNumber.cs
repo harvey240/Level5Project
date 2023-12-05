@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class HealthNumber : MonoBehaviour
+public class HealthNumber : MonoBehaviour, IHealthUpdater
 {
 
     public GameObject maxHealthNumber;

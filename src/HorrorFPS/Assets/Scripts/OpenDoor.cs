@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 
-public class OpenDoor : MonoBehaviour
+public class OpenDoor : Interactable
 {
     public PlayerTest playerTest;
     public Animation doorOpen;
@@ -25,6 +25,7 @@ public class OpenDoor : MonoBehaviour
 
     void Update()
     {
+        // TODO: May want to move this to only check when the player is interacting to save checking every update
         if (locked==true)
         {
             if (playerTest.HasKey)
@@ -34,9 +35,9 @@ public class OpenDoor : MonoBehaviour
         }
     }
     
-    void OnTriggerStay()
+    protected override void Interact()
     {
-        if (Input.GetKey(KeyCode.E) && !isChangingState)
+        if (!isChangingState)
         {
             isChangingState = true;
             if ((!locked) && !isOpen)
@@ -60,6 +61,33 @@ public class OpenDoor : MonoBehaviour
 
         }
     }
+
+    // void OnTriggerStay()
+    // {
+    //     if (Input.GetKey(KeyCode.E) && !isChangingState)
+    //     {
+    //         isChangingState = true;
+    //         if ((!locked) && !isOpen)
+    //         {
+    //             doorOpen.Play("DoorOpenIn");
+    //             isOpen = true;
+    //             StartCoroutine(ChangeStateAfterDelay());
+    //             print("trying to Open");
+                
+    //         }
+    //         else if (isOpen){
+    //             doorOpen.Play("DoorCloseIn");
+    //             isOpen = false;
+    //             StartCoroutine(ChangeStateAfterDelay());
+    //             print("trying to close");
+    //         }
+    //         else
+    //         {
+    //             isChangingState = false;
+    //         }
+
+    //     }
+    // }
 
     IEnumerator ChangeStateAfterDelay()
     {

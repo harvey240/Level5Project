@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
-public class HeartHealthManager : MonoBehaviour
+public class HeartHealthManager : MonoBehaviour, IHealthUpdater
 {
     public GameObject heartPrefab;
     List<HeartHealth> hearts = new List<HeartHealth>();
 
+
+    public void SetHealth(int maxHealth, int currentHealth)
+    {
+        createHearts(maxHealth, currentHealth);
+    }
 
     public void createHearts(int maxHealth, int currentHealth)
     {

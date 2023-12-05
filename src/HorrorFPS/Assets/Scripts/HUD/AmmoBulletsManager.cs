@@ -2,10 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AmmoBulletsManager : MonoBehaviour
+public class AmmoBulletsManager : MonoBehaviour, IAmmoUpdater
 {
     public GameObject bulletPrefab;
     
+    public void SetAmmo(int ammoCount, int MaxAmmo)
+    {
+        createBullets(ammoCount);
+    }
+
     public void createBullets(int currentAmmo)
     {
         clearAllBullets();

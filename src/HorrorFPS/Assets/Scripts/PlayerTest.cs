@@ -9,25 +9,33 @@ public class PlayerTest : MonoBehaviour
 {
     public int maxHealth = 100;
     public int currentHealth;
+
+    public HUDManager hudManager;
+
     public HealthBar healthBar;
     public HeartHealthManager heartHealthManager;
     public HealthNumber healthNumber;
+    public HealthVignette healthVignette;
     public HitFlash hitFlash;
+
+
     public AudioSource damageSound;
     public bool HasKey = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        healthNumber.SetHealth(maxHealth, currentHealth);
+        hudManager.currentHealthUpdater.SetHealth(maxHealth, currentHealth);
+        // healthNumber.SetHealth(maxHealth, currentHealth);
+        // healthVignette.SetHealth(maxHealth,currentHealth);
+        
+        // healthBar.SetHealth(maxHealth);
+        // heartHealthManager.createHearts(maxHealth, currentHealth);
     }
 
     void Awake(){
         currentHealth = maxHealth;
 
-        // healthBar.SetHealth(maxHealth);
-        // heartHealthManager.createHearts(maxHealth, currentHealth);
-        // healthNumber.SetHealth(maxHealth, currentHealth);
     }
 
     // Update is called once per frame
@@ -48,9 +56,14 @@ public class PlayerTest : MonoBehaviour
         hitFlash.DisplayHitFlash();
         damageSound.PlayOneShot(damageSound.clip);
 
+        hudManager.currentHealthUpdater.SetHealth(maxHealth, currentHealth);
+
         // healthBar.SetHealth(currentHealth);
         // heartHealthManager.createHearts(maxHealth, currentHealth);
-        healthNumber.SetHealth(maxHealth, currentHealth);
+
+        // healthNumber.SetHealth(maxHealth, currentHealth);
+        // healthVignette.SetHealth(maxHealth,currentHealth);
+
     }
 
     public void Heal(int health)
@@ -63,7 +76,13 @@ public class PlayerTest : MonoBehaviour
                 currentHealth += health;
         }
 
-        healthNumber.SetHealth(maxHealth, currentHealth);
+        hudManager.currentHealthUpdater.SetHealth(maxHealth, currentHealth);
+
+        // healthNumber.SetHealth(maxHealth, currentHealth);
+        // healthVignette.SetHealth(maxHealth,currentHealth);
+
+        // healthBar.SetHealth(currentHealth);
+        // heartHealthManager.createHearts(maxHealth, currentHealth);
     }
 
 }

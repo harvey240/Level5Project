@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour
 {
     public float health = 50f;
     public PlayerTest playerTest;
+    public bool isPassive = false;
     private bool isAttacking = false;
 
 
@@ -20,7 +21,7 @@ public class Enemy : MonoBehaviour
 
     void OnTriggerStay(Collider collider)
     {
-        if (collider.CompareTag("Player") && !isAttacking)
+        if (collider.CompareTag("Player") && !isAttacking && !isPassive)
         {
             // playerTest.TakeDamage(10);
             StartCoroutine(attack());
