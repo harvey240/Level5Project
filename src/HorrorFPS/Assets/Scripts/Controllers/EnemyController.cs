@@ -15,13 +15,15 @@ public class EnemyController : MonoBehaviour
 
     Transform target;
     NavMeshAgent agent;
-    public Animator anim = null;
+    private Animator animator = null;
 
     // Start is called before the first frame update
     void Start()
     {
         target = PlayerManager.instance.player.transform;
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponentInChildren<Animator>();
+        Debug.Log(animator);
         
     }
 
@@ -32,7 +34,7 @@ public class EnemyController : MonoBehaviour
 
         if (distance <= lookRadius && fov.canSeePlayer)
         {
-            agent.SetDestination(target.position);
+            walkToDestination(target.position);
 
             if (distance <= agent.stoppingDistance)
             {
@@ -40,6 +42,7 @@ public class EnemyController : MonoBehaviour
 
                 //Face the target
                 FaceTarget();
+                animator.SetFloat("Speed", 0f);
             }
         }
         
@@ -47,6 +50,13 @@ public class EnemyController : MonoBehaviour
         {
             Patrol();
         }
+
+    }
+
+    private void walkToDestination(Vector3 destination)
+    {
+        agent.SetDestination(destination);
+        animator.SetFloat("Speed", 1f);
     }
 
     private void Patrol()
@@ -55,7 +65,7 @@ public class EnemyController : MonoBehaviour
         if (RandomWalkPoint(agent.transform.position, walkPointRange, out point))
         {
             Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f);
-            agent.SetDestination(point);
+            walkToDestination(point);
         }
 
         // if (!walkPointSet) SearchWalkPoint();
