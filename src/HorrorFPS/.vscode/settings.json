@@ -52,5 +52,6 @@
         "temp/":true,
         "Temp/":true
     },
-    "dotnet.defaultSolution": "HorrorFPS.sln"
+    "dotnet.defaultSolution": "HorrorFPS.sln",
+    "dotnet.preferCSharpExtension": true
 }

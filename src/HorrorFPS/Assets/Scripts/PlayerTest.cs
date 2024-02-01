@@ -17,14 +17,31 @@ public class PlayerTest : MonoBehaviour
     public HealthNumber healthNumber;
     public HealthVignette healthVignette;
     public HitFlash hitFlash;
+    public bool isDead = false;
 
 
     public AudioSource damageSound;
+    public Animation cameraMovement;
+
+    public GameObject playerCamera;
+    public FPSController fpsController;
+    public GameObject spawnPoint;
+    private Transform spawnTransform;
+
     public bool HasKey = false;
+
+    private Vector3 defaultCameraPosition;
+    private Quaternion defaultCameraRotation;
 
     // Start is called before the first frame update
     void Start()
     {
+        spawnTransform = spawnPoint.transform;
+        defaultCameraPosition = playerCamera.transform.localPosition;
+        defaultCameraRotation = playerCamera.transform.localRotation;
+
+        fpsController = GetComponent<FPSController>();
+
         hudManager.currentHealthUpdater.SetHealth(maxHealth, currentHealth);
         // healthNumber.SetHealth(maxHealth, currentHealth);
         // healthVignette.SetHealth(maxHealth,currentHealth);
@@ -34,6 +51,7 @@ public class PlayerTest : MonoBehaviour
     }
 
     void Awake(){
+        // playerCamera = GameObject.FindWithTag("MainCamera");
         currentHealth = maxHealth;
 
     }
@@ -57,6 +75,13 @@ public class PlayerTest : MonoBehaviour
         damageSound.PlayOneShot(damageSound.clip);
 
         hudManager.currentHealthUpdater.SetHealth(maxHealth, currentHealth);
+
+        if (currentHealth == 0)
+        {
+            FindObjectOfType<GameManager>().EndGame();
+            isDead = true;
+            cameraMovement.Play("dieCam");
+        }
 
         // healthBar.SetHealth(currentHealth);
         // heartHealthManager.createHearts(maxHealth, currentHealth);
@@ -83,6 +108,29 @@ public class PlayerTest : MonoBehaviour
 
         // healthBar.SetHealth(currentHealth);
         // heartHealthManager.createHearts(maxHealth, currentHealth);
+    }
+
+    public void Respawn()
+    {
+        Heal(100);
+        Debug.Log(defaultCameraPosition);
+        Debug.Log(defaultCameraRotation);
+
+        Debug.Log("Spawn Position: " + spawnTransform.position);
+        Debug.Log("Spawn Rotation: " + spawnTransform.rotation.eulerAngles);
+        cameraMovement.Stop("diecCam");
+
+        playerCamera.transform.localPosition = defaultCameraPosition;
+        playerCamera.transform.localRotation = defaultCameraRotation;
+        
+        fpsController.characterController.enabled = false;
+        transform.position = spawnTransform.position;
+        transform.rotation = spawnTransform.rotation;
+        fpsController.characterController.enabled = true;
+
+        
+
+        isDead = false;
     }
 
 }
