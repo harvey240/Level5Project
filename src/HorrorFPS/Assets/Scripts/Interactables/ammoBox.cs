@@ -10,6 +10,7 @@ public class ammoBox : Interactable
 
     protected override void Interact()
     {
+        TutorialManager.instance.TaskCompleted(0);
         gun.addAmmo(ammoAmount);
         gameObject.SetActive(false);
     }

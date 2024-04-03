@@ -8,9 +8,19 @@ public class OpenDoor : Interactable
 {
     public PlayerTest playerTest;
     public Animation doorOpen;
+
+    [SerializeField]
+    private AudioSource doorOpenSound;
+    [SerializeField]
+    private AudioSource doorCloseSound;
+    [SerializeField]
+    private AudioSource tryOpenDoorSound;
+
     public bool locked;
-    private bool isOpen = false;
+    public bool openOnStart;
+    public bool isOpen = false;
     private bool isChangingState = false;
+    private bool initialOpen = false;
 
 
     float _closedRotation;
@@ -23,15 +33,13 @@ public class OpenDoor : Interactable
 
     }
 
+
     void Update()
     {
-        // TODO: May want to move this to only check when the player is interacting to save checking every update
-        if (locked==true)
+        if (openOnStart && !initialOpen)
         {
-            if (playerTest.HasKey)
-            {
-                locked = false;
-            }
+            initialOpen = true;
+            Interact();
         }
     }
     
@@ -46,20 +54,30 @@ public class OpenDoor : Interactable
                 isOpen = true;
                 StartCoroutine(ChangeStateAfterDelay());
                 print("trying to Open");
-                
+                doorOpenSound.PlayOneShot(doorOpenSound.clip);
+                promptMessage = "Close Door";
             }
             else if (isOpen){
                 doorOpen.Play("DoorCloseIn");
                 isOpen = false;
                 StartCoroutine(ChangeStateAfterDelay());
                 print("trying to close");
+                doorCloseSound.PlayOneShot(doorCloseSound.clip);
+                promptMessage = "Open Door";
             }
+
             else
             {
                 isChangingState = false;
             }
 
         }
+
+        if (locked)
+        {
+            doorOpen.Play("doorShake");
+            tryOpenDoorSound.PlayOneShot(tryOpenDoorSound.clip);
+        }       
     }
 
     // void OnTriggerStay()

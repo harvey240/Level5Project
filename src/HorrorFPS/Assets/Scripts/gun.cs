@@ -4,17 +4,19 @@ using System.Collections;
 public class gun : MonoBehaviour
 {
     public int MaxAmmo = 10;
-    public int ammoReserve = 100;
+    public int ammoReserve = 20;
+    public int maxAmmoReserve = 120;
     public float damage = 10f;
     public float range = 100f;
     public float impactForce = 30f;
     public float fireRate = 3.5f;
-    private int ammoCount;
+    public int ammoCount = 10;
     private bool isReloading = false;
 
     public Camera fpsCamera;
     public ParticleSystem muzzleFlash;
     public GameObject impactEffect;
+    public GameObject bloodImpactEffect;
     public Animation gunMovement;
     [SerializeField]
     private AudioSource gunshot;
@@ -26,6 +28,8 @@ public class gun : MonoBehaviour
     private float nextTimeToFire = 0f;
     private int layerMask = ~0;
 
+    public PlayerTest playerTest;
+
     // Manage the different possible Ammo UI elements
     public HUDManager hudManager;
     public AmmoCounter ammoCounter;
@@ -35,6 +39,7 @@ public class gun : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("ammoCount: " + ammoCount + " MaxAmmo: " + MaxAmmo);
         hudManager.currentAmmoUpdater.SetAmmo(ammoCount, MaxAmmo);
         hudManager.currentAmmoUpdater.SetReserve(ammoReserve);
         // ammoCounter.SetAmmo(ammoCount, MaxAmmo);
@@ -44,7 +49,7 @@ public class gun : MonoBehaviour
 
     void Awake()
     {
-        ammoCount = MaxAmmo;
+        // ammoCount = MaxAmmo;
         // ammoBulletsManager.createBullets(ammoCount);
         // ammoBar.SetAmmo(ammoCount,MaxAmmo);
     }
@@ -52,7 +57,7 @@ public class gun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isReloading)
+        if (!isReloading && !playerTest.isDead)
         {
 
             if ((Input.GetButtonDown("Fire1")) && (Time.time >= nextTimeToFire) && (ammoCount > 0))
@@ -67,7 +72,7 @@ public class gun : MonoBehaviour
                 // gunHeat.SetAmmo(ammoCount, MaxAmmo);
             }
 
-            else if ((Input.GetButtonDown("Fire1")))
+            else if ((Input.GetButtonDown("Fire1")) && ammoCount == 0)
             {
                 emptyFire.PlayOneShot(emptyFire.clip);
             }
@@ -98,9 +103,24 @@ public class gun : MonoBehaviour
             Debug.Log(hit.transform.name);
 
             Enemy enemy = hit.transform.GetComponent<Enemy>();
+
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
+                GameObject bloodImpactGO = Instantiate(bloodImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                bloodImpactGO.transform.SetParent(enemy.transform);
+                Destroy(bloodImpactGO, 2f);
+            }
+
+            else
+            {
+                if (hit.transform.name == "Target")
+                {
+                    TutorialManager.instance.TaskCompleted(2);
+                }
+                            
+                GameObject impactGO = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                Destroy(impactGO, 2f);
             }
 
             if (hit.rigidbody != null)
@@ -109,8 +129,7 @@ public class gun : MonoBehaviour
                 Debug.Log("HIT!");
             }
 
-            GameObject impactGO = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-            Destroy(impactGO, 2f);
+
         }
     }
 
@@ -138,12 +157,26 @@ public class gun : MonoBehaviour
         // ammoBar.SetAmmo(ammoCount, MaxAmmo);
         // gunHeat.SetAmmo(ammoCount, MaxAmmo);
 
+        if(TutorialManager.instance.isActive)
+        {
+            TutorialManager.instance.TaskCompleted(1);
+        }
+        
         isReloading = false;
     }
 
     public void addAmmo(int ammoAmount)
     {
-        ammoReserve += ammoAmount;
+        if ((ammoAmount + ammoReserve) <= maxAmmoReserve)
+        {
+            ammoReserve += ammoAmount;
+        }
+        else
+        {
+            ammoReserve = maxAmmoReserve;
+        }
+
         hudManager.currentAmmoUpdater.SetReserve(ammoReserve);
+
     }
 }
